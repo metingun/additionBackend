@@ -1,0 +1,26 @@
+package com.website.backend.repository;
+
+import com.website.backend.model.SalesModel;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface SalesRepo extends JpaRepository<SalesModel, Long> {
+    SalesModel findById(long id);
+
+    List<SalesModel> findAllByAdditionNo(long additionNo);
+
+    List<SalesModel> findAllByAdditionNoAndCancelSales(long additionNo,int cancelSales);
+
+    List<SalesModel> findAllByCancelSalesDateLongGreaterThanEqualAndCancelSalesDateLongLessThanEqualAndCancelSalesCheck(long firstDate, long secondDate,int cancelSalesCheck);
+
+    List<SalesModel> findAllByCompleteOrderAndOrderStatusAndCancelSales(int completeOrder,int orderStatus,int cancelSales);
+
+    List<SalesModel> findAllByOrderStatusAndTableName(int orderStatus,String tableName);
+
+    List<SalesModel> findAllByCompleteOrderAndOrderStatusAndCancelSalesAndTableName(int completeOrder,int orderStatus,int cancelSales,String tableName);
+
+    List<SalesModel> findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqual(long firstDate, long secondDate);
+}

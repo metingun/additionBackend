@@ -1,0 +1,16 @@
+#########  TABLE RESTs #######
+
+http://localhost:8080/restful/tables/save
+POST-TablesModel
+
+http://localhost:8080/restful/tables/getAll
+GET
+
+http://localhost:8080/restful/tables//getAllDataByType/type={tableType}
+GET-String-tableType
+
+http://localhost:8080/restful/tables/delete
+POST-TablesModel
+
+TablesModel-->
+{"tableName": 1,"tableType": 1, "payment": 100}
