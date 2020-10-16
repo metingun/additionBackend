@@ -35,6 +35,16 @@ public class PersonelController {
         }
     }
 
+    @RequestMapping(value = "/getPersonalPayInfo/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel getPersonalPayInfo(@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(personelService.getPersonalPayInfo(startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/delete/id={id}", method = RequestMethod.GET)
     public ResponseModel delete(@PathVariable long id) {
         try {

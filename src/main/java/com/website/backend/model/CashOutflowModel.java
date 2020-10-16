@@ -12,6 +12,12 @@ public class CashOutflowModel {
     private String personelName;
 
     @Column
+    private String type;
+
+    @Column
+    private long typeId;
+
+    @Column
     private String comment;
 
     @Column
@@ -22,6 +28,22 @@ public class CashOutflowModel {
 
     @Column
     private double price;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public long getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(long typeId) {
+        this.typeId = typeId;
+    }
 
     public long getId() {
         return id;

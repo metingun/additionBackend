@@ -14,4 +14,9 @@ public interface CashOutflowRepo extends JpaRepository<CashOutflowModel, Long> {
     CashOutflowModel findById(long id);
 
     List<CashOutflowModel> findAllByDateLongGreaterThanEqualAndDateLongLessThanEqual(long startDate,long finishDate);
+
+    List<CashOutflowModel> findAllByDateLongGreaterThanEqualAndDateLongLessThanEqualAndTypeId(long startDate,long finishDate,long typeId);
+
+    List<CashOutflowModel> findAllByDateLongGreaterThanEqualAndDateLongLessThanEqualAndPersonelName(long startDate,long finishDate,String personelName);
+
 }

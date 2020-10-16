@@ -36,6 +36,16 @@ public class AdditionController {
         }
     }
 
+    @RequestMapping(value = "/getAdditionsByDateAndPaymentType/startDate={startDate}/finishDate={finishDate}/paymentType={paymentType}", method = RequestMethod.GET)
+    public ResponseModel getAdditionsByDateAndPaymentType(@PathVariable String startDate,@PathVariable String finishDate,@PathVariable int paymentType) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(additionService.getAdditionsByDate(startDate,finishDate,paymentType), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getAdditionByTableNameAndActivity", method = RequestMethod.POST)
     public ResponseModel getAdditionByTableNameAndActivity(@RequestBody TablesModel tablesModel) {
         try {

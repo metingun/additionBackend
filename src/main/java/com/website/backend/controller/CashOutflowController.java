@@ -37,6 +37,46 @@ public class CashOutflowController {
         }
     }
 
+    @RequestMapping(value = "/getAllByDate/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel getAllByDate(@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.getAllByDate(startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getTotalPersonalByDate/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel getTotalPersonalByDate(@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.getTotalPersonalByDate(startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getCashflowByDateAndPersonelId/startDate={startDate}/finishDate={finishDate}/personelId={personelId}", method = RequestMethod.GET)
+    public ResponseModel getCashflowByDateAndPersonelId(@PathVariable String startDate,@PathVariable String finishDate,@PathVariable long personelId) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.getCashflowByDateAndPersonelId(startDate,finishDate,personelId), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getTotalsByOutcomeType/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel getTotalsByOutcomeType(@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.getTotalsByOutcomeType(startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
 /*    @RequestMapping(value = "/delete/id={id}", method = RequestMethod.GET)
     public ResponseModel delete(@PathVariable long id) {
         try {

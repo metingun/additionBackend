@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,20 +38,30 @@ public class AdditionService {
         return salesRepo.findAllByAdditionNoAndCancelSales(additionId, 0);
     }
 
+    public List<Long> convertLong(String startDate, String finishDate) throws ParseException {
+        List<Long> arr = new ArrayList<>();
+        long finish;
+        long start = dateConvertLong(0, startDate);
+        if (finishDate.equals(" 08:00")) {
+            finish = dateConvertLong(1, startDate);
+        } else {
+            finish = dateConvertLong(0, finishDate);
+        }
+        arr.add(start);
+        arr.add(finish);
+        return arr;
+    }
+
     public DailyIncomeModel getAdditionTotalByDate(String startDate, String finishDate) {
-        List<AdditionModel> additionModels;
         List<CashOutflowModel> cashOutflowModels;
+        List<AdditionModel> additionModels;
         try {
-            long finish;
-            long start = dateConvertLong(0, startDate);
-            if (finishDate.equals(" 08:00")) {
-                finish = dateConvertLong(1, startDate);
-            }
-            else{
-                finish = dateConvertLong(0, finishDate);
-            }
-            additionModels = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivity(start, finish, 0);
-            cashOutflowModels = cashOutflowRepo.findAllByDateLongGreaterThanEqualAndDateLongLessThanEqual(start, finish);
+            List<Long> arr = convertLong(startDate, finishDate);
+            additionModels = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivity(arr.get(0), arr.get(1), 0);
+            long a=arr.get(0).longValue();
+            long b=arr.get(1).longValue();
+
+            cashOutflowModels = cashOutflowRepo.findAllByDateLongGreaterThanEqualAndDateLongLessThanEqual(a, b);
             DailyIncomeModel dailyIncomeModel = sumPaymentAdditionModels(additionModels);
             double totalExpense = sumExpense(cashOutflowModels);
             dailyIncomeModel.setTotalExpense(totalExpense);
@@ -63,6 +74,32 @@ public class AdditionService {
 
     }
 
+    public List<AdditionModel> getAdditionsByDate(String startDate, String finishDate, int paymentType) {
+        List<AdditionModel> additionModels;
+        try {
+            List<Long> arr = convertLong(startDate, finishDate);
+            switch (paymentType) {
+                case 0:
+                    additionModels = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivity(arr.get(0), arr.get(1), 0);
+                    break;
+
+                case 1:
+                    additionModels = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndCashPaymentGreaterThan(arr.get(0), arr.get(1), 0, 0);
+                    break;
+
+                case 2:
+                    additionModels = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndCreditCardPaymentGreaterThan(arr.get(0), arr.get(1), 0, 0);
+                    break;
+
+                default:
+                    throw new IllegalStateException("Unexpected value: " + paymentType);
+            }
+            return additionModels;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public long dateConvertLong(int adding, String startDate) throws ParseException {
         Date date = new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(startDate);
         long a = date.getTime();
@@ -72,7 +109,7 @@ public class AdditionService {
         return a;
     }
 
-    private double sumExpense(List<CashOutflowModel> cashOutflows) {
+    public double sumExpense(List<CashOutflowModel> cashOutflows) {
         double totalExpense = 0;
 
         for (CashOutflowModel cashOutflow : cashOutflows) {
