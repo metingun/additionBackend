@@ -1,6 +1,7 @@
 package com.website.backend.controller;
 
 import com.website.backend.model.ResponseModel;
+import com.website.backend.model.TableTransferModel;
 import com.website.backend.model.TablesModel;
 import com.website.backend.service.TablesService;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +71,16 @@ public class TablesController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(tablesService.getAllDataByCompanyId(companyId), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/tableTransfer", method = RequestMethod.POST)
+    public ResponseModel tableTransfer(@RequestBody TableTransferModel tableTransferModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(tablesService.tableTransferAll(tableTransferModel), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

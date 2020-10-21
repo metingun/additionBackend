@@ -38,11 +38,11 @@ public class SalesController {
         }
     }
 
-    @RequestMapping(value = "/getSalesByCompleteOrderAndOrderStatusAndCancelSales/completeOrder={completeOrder}/orderStatus={orderStatus}/cancelSales={cancelSales}", method = RequestMethod.GET)
-    public ResponseModel getSalesByCompleteOrderAndOrderStatusAndCancelSales(@PathVariable int completeOrder,@PathVariable int orderStatus,@PathVariable int cancelSales) {
+    @RequestMapping(value = "/getSalesByCompleteOrderAndOrderStatusAndCancelSales/completeOrder={completeOrder}/orderStatus={orderStatus}/cancelSales={cancelSales}/categoryType={categoryType}", method = RequestMethod.GET)
+    public ResponseModel getSalesByCompleteOrderAndOrderStatusAndCancelSales(@PathVariable int completeOrder,@PathVariable int orderStatus,@PathVariable int cancelSales,@PathVariable int categoryType) {
         try {
             return ResponseModel
-                    .createSuccessResponseWithData(salesService.getSalesByCompleteOrderAndOrderStatusAndCancelSales(completeOrder,orderStatus,cancelSales), false);
+                    .createSuccessResponseWithData(salesService.getSalesByCompleteOrderAndOrderStatusAndCancelSales(completeOrder,orderStatus,cancelSales,categoryType), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }
@@ -58,11 +58,11 @@ public class SalesController {
         }
     }
 
-    @RequestMapping(value = "/getSalesAllStatusZeroOneDay", method = RequestMethod.GET)
-    public ResponseModel getSalesAllStatusZeroOneDay() {
+    @RequestMapping(value = "/getSalesAllStatusZeroOneDay/categoryType={categoryType}", method = RequestMethod.GET)
+    public ResponseModel getSalesAllStatusZeroOneDay(@PathVariable int categoryType) {
         try {
             return ResponseModel
-                    .createSuccessResponseWithData(salesService.getSalesByCompleteOrderAndOrderStatusAndCancelSales(0,0,0), false);
+                    .createSuccessResponseWithData(salesService.getSalesByCompleteOrderAndOrderStatusAndCancelSales(0,0,0,categoryType), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

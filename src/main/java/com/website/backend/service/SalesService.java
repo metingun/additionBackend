@@ -22,7 +22,7 @@ public class SalesService {
     private final AdditionService additionService;
     private final CategoriesRepo categoriesRepo;
 
-    public SalesService(SalesRepo salesRepo, ProductRepo productRepo, TablesRepo tablesRepo, AdditionRepo additionRepo,AdditionService additionService,CategoriesRepo categoriesRepo) {
+    public SalesService(SalesRepo salesRepo, ProductRepo productRepo, TablesRepo tablesRepo, AdditionRepo additionRepo, AdditionService additionService, CategoriesRepo categoriesRepo) {
         this.salesRepo = salesRepo;
         this.productRepo = productRepo;
         this.tablesRepo = tablesRepo;
@@ -34,10 +34,10 @@ public class SalesService {
     public List<SalesModel> save(List<SalesModel> sales) throws ParseException {
         Date date = new Date();
         String nowDate = dateFormat.format(date);
-        int menuType=tablesRepo.findByTableName(sales.get(0).getTableName()).getMenuType();
+        int menuType = tablesRepo.findByTableName(sales.get(0).getTableName()).getMenuType();
         for (SalesModel sale : sales) {
             ProductModel productModel = productRepo.findByProductNo(sale.getProductNo());
-            if (menuType==0) {
+            if (menuType == 0) {
                 sale.setUnitPrice(productModel.getUnitPriceForIn());
             } else {
                 sale.setUnitPrice(productModel.getUnitPriceForOut());
@@ -73,24 +73,35 @@ public class SalesService {
             additionModel.setPayment(sales.stream().mapToDouble(SalesModel::getTotalPrice).sum() + additionModel.getPayment());
         }
         additionModel.setAdditionStartDate(sales.get(0).getSalesDate());
-        additionModel.setAdditionStartDateLong(additionService.dateConvertLong(0,sales.get(0).getSalesDate()));
-        TablesModel table=tablesRepo.findByTableName(additionModel.getTableName());
+        additionModel.setAdditionStartDateLong(additionService.dateConvertLong(0, sales.get(0).getSalesDate()));
+        TablesModel table = tablesRepo.findByTableName(additionModel.getTableName());
         table.setPayment(additionModel.getPayment());
         tablesRepo.save(table);
         additionRepo.save(additionModel);
     }
 
-    public List<SalesModel> getSalesByCompleteOrderAndOrderStatusAndCancelSales(int completeOrder, int orderStatus, int cancelSales) {
-        if (orderStatus==0){
-            Date date = new Date();
-            long a=date.getTime();
-            long b=a-43200*1000;
-            return salesRepo.findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqual(b,a);
+    public List<SalesModel> getSalesByCompleteOrderAndOrderStatusAndCancelSales(int completeOrder, int orderStatus, int cancelSales, int categoryType) {
+        List<SalesModel> salesModels = new ArrayList<>();
+        if (categoryType==0){
+            return salesRepo.findAllByCompleteOrderAndOrderStatusAndCancelSales( 1, 1, 0);
         }
-        List<SalesModel> salesModels=salesRepo.findAllByCompleteOrderAndOrderStatusAndCancelSales(completeOrder,orderStatus,cancelSales);
-        List<SalesModel> sales=new ArrayList<>();
-        for (SalesModel salesModel:salesModels) {
-            if(categoriesRepo.findByCategoryName(salesModel.getCategoryName()).getCategoryType()==1){
+        else if (completeOrder == orderStatus && cancelSales == 0) {
+            Date date = new Date();
+            long a = date.getTime();
+            long b = a - 43200 * 1000;
+            salesModels.addAll(salesRepo.findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqualAndCompleteOrderAndOrderStatusAndCancelSales(b, a, 1, 1, 0));
+            salesModels.addAll(salesRepo.findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqualAndCompleteOrderAndOrderStatusAndCancelSales(b, a, 0, 0, 0));
+        } else {
+            salesModels = salesRepo.findAllByCompleteOrderAndOrderStatusAndCancelSales(completeOrder, orderStatus, cancelSales);
+        }
+
+        return getSalesListByCategoryType(salesModels, categoryType);
+    }
+
+    private List<SalesModel> getSalesListByCategoryType(List<SalesModel> salesModels, int categoryType) {
+        List<SalesModel> sales = new ArrayList<>();
+        for (SalesModel salesModel : salesModels) {
+            if (categoriesRepo.findByCategoryName(salesModel.getCategoryName()).getCategoryType() == categoryType) {
                 sales.add(salesModel);
             }
         }
@@ -98,11 +109,11 @@ public class SalesService {
     }
 
     public List<SalesModel> getActiveSalesByTableName(String tableName) {
-        return salesRepo.findAllByOrderStatusAndTableName(1,tableName);
+        return salesRepo.findAllByOrderStatusAndTableName(1, tableName);
     }
 
-    public List<SalesModel> getSalesByCompleteOrderAndOrderStatusAndCancelSalesAndTableName(int completeOrder, int orderStatus, int cancelSales,String tableName) {
-        return salesRepo.findAllByCompleteOrderAndOrderStatusAndCancelSalesAndTableName(completeOrder,orderStatus,cancelSales,tableName);
+    public List<SalesModel> getSalesByCompleteOrderAndOrderStatusAndCancelSalesAndTableName(int completeOrder, int orderStatus, int cancelSales, String tableName) {
+        return salesRepo.findAllByCompleteOrderAndOrderStatusAndCancelSalesAndTableName(completeOrder, orderStatus, cancelSales, tableName);
     }
 
     public String setSalesStartDateById(long id) {
@@ -131,8 +142,8 @@ public class SalesService {
     public List<SalesModel> getCancelSales() {
         Date date = new Date();
         long nowDate = date.getTime();
-        long dateBeforeOneDay = nowDate-86400*1000;
-        return salesRepo.findAllByCancelSalesDateLongGreaterThanEqualAndCancelSalesDateLongLessThanEqualAndCancelSalesCheck(dateBeforeOneDay, nowDate,0);
+        long dateBeforeOneDay = nowDate - 86400 * 1000;
+        return salesRepo.findAllByCancelSalesDateLongGreaterThanEqualAndCancelSalesDateLongLessThanEqualAndCancelSalesCheck(dateBeforeOneDay, nowDate, 0);
     }
 
     public SalesModel cancelSale(CancelSaleModel cancelSaleModel) {
@@ -147,18 +158,17 @@ public class SalesService {
         salesModel.setComment(cancelSaleModel.getComment());
         salesModel.setCancelUserNo(cancelSaleModel.getUserNo());
         salesRepo.save(salesModel);
-        AdditionModel additionModel=additionRepo.findById(salesModel.getAdditionNo());
-        double newAdditionPrice=additionModel.getPayment()-salesModel.getTotalPrice();
-        if (newAdditionPrice<=0){
+        AdditionModel additionModel = additionRepo.findById(salesModel.getAdditionNo());
+        double newAdditionPrice = additionModel.getPayment() - salesModel.getTotalPrice();
+        if (newAdditionPrice <= 0) {
             additionModel.setActivity(0);
             additionModel.setPayment(0);
-        }
-        else {
+        } else {
             additionModel.setPayment(newAdditionPrice);
         }
         additionRepo.save(additionModel);
-        TablesModel table=tablesRepo.findByTableName(salesModel.getTableName());
-        table.setPayment(calculateTotalPay(salesModel));
+        TablesModel table = tablesRepo.findByTableName(salesModel.getTableName());
+        table.setPayment(calculateTotalPay(salesModel.getAdditionNo()));
         tablesRepo.save(table);
         return salesModel;
     }
@@ -170,12 +180,32 @@ public class SalesService {
         return "200";
     }
 
-    public double calculateTotalPay(SalesModel salesModel) {
-        double a=0;
-        List<SalesModel> sales=salesRepo.findAllByAdditionNoAndCancelSales(salesModel.getAdditionNo(),0);
-        for (SalesModel sale: sales) {
-            a+=sale.getTotalPrice();
+    private double calculateTotalPay(long additionNo) {
+        double a = 0;
+        List<SalesModel> sales = salesRepo.findAllByAdditionNoAndCancelSales(additionNo, 0);
+        for (SalesModel sale : sales) {
+            a += sale.getTotalPrice();
         }
         return a;
+    }
+
+    public void salesTransferToEmptyTable(TableTransferModel tableTransferModel) {
+        long additionId=additionRepo.findByTableNameAndActivity(tableTransferModel.getFromTable(),1).getId();
+        List<SalesModel> salesModels= salesRepo.findAllByAdditionNo(additionId);
+        for (SalesModel sale:salesModels) {
+            sale.setTableName(tableTransferModel.getToTable());
+            salesRepo.save(sale);
+        }
+    }
+
+    public void salesTransfer(TableTransferModel tableTransferModel) {
+        long additionId=additionRepo.findByTableNameAndActivity(tableTransferModel.getFromTable(),1).getId();
+        long additionId2=additionRepo.findByTableNameAndActivity(tableTransferModel.getToTable(),1).getId();
+        List<SalesModel> salesModels= salesRepo.findAllByAdditionNo(additionId);
+        for (SalesModel sale:salesModels) {
+            sale.setTableName(tableTransferModel.getToTable());
+            sale.setAdditionNo(additionId2);
+            salesRepo.save(sale);
+        }
     }
 }

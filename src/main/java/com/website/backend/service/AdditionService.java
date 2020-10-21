@@ -58,8 +58,8 @@ public class AdditionService {
         try {
             List<Long> arr = convertLong(startDate, finishDate);
             additionModels = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivity(arr.get(0), arr.get(1), 0);
-            long a=arr.get(0).longValue();
-            long b=arr.get(1).longValue();
+            long a= arr.get(0);
+            long b= arr.get(1);
 
             cashOutflowModels = cashOutflowRepo.findAllByDateLongGreaterThanEqualAndDateLongLessThanEqual(a, b);
             DailyIncomeModel dailyIncomeModel = sumPaymentAdditionModels(additionModels);
@@ -120,20 +120,18 @@ public class AdditionService {
     }
 
     private DailyIncomeModel sumPaymentAdditionModels(List<AdditionModel> additionModels) {
-        double dailyIncome = 0;
         double cashTotal = 0;
         double creditTotal = 0;
 
         DailyIncomeModel dailyIncomeModel = new DailyIncomeModel();
 
         for (AdditionModel additionalModel : additionModels) {
-            dailyIncome += additionalModel.getDiscountedPayment();
             cashTotal += additionalModel.getCashPayment();
             creditTotal += additionalModel.getCreditCardPayment();
         }
         dailyIncomeModel.setCashIncome(cashTotal);
         dailyIncomeModel.setCreditCardIncome(creditTotal);
-        dailyIncomeModel.setDailyIncome(dailyIncome);
+        dailyIncomeModel.setDailyIncome(cashTotal+creditTotal);
 
         return dailyIncomeModel;
     }
@@ -163,11 +161,45 @@ public class AdditionService {
             tablesRepo.save(table);
         }
         additionRepo.save(addition);
+
+        List<SalesModel> salesModels= salesRepo.findAllByAdditionNo(addition.getId());
+        for (SalesModel sales:salesModels) {
+            sales.setCompleteOrder(0);
+            sales.setOrderStatus(0);
+            salesRepo.save(sales);
+        }
         return "200";
     }
 
     public double calculateDiscountedPrice(AdditionModel additionModel, AdditionModel addition) {
         double discountRate = discountTypeRepo.findByDiscountName(additionModel.getDiscountName()).getDiscountRate();
-        return (1 - discountRate / 100) * addition.getPayment();
+        return (1 - discountRate) * addition.getPayment();
+    }
+
+    public void additionTransferToEmptyTable(TableTransferModel tableTransferModel) {
+        AdditionModel additionModel=additionRepo.findByTableNameAndActivity(tableTransferModel.getFromTable(),1);
+        additionModel.setTableName(tableTransferModel.getToTable());
+        additionRepo.save(additionModel);
+    }
+
+    public void additionTransfer(TableTransferModel tableTransferModel) {
+        AdditionModel additionModel=additionRepo.findByTableNameAndActivity(tableTransferModel.getToTable(),1);
+        AdditionModel additionModel2=additionRepo.findByTableNameAndActivity(tableTransferModel.getFromTable(),1);
+        additionModel.setPayment(calculateTotalPay(additionModel.getId()));
+        additionRepo.delete(additionModel2);
+        additionRepo.save(additionModel);
+    }
+
+    public AdditionModel getOneAdditionByTableNameAndActivity(TablesModel tablesModel) {
+        return additionRepo.findByTableNameAndActivity(tablesModel.getTableName(),1);
+    }
+
+    private double calculateTotalPay(long additionNo) {
+        double a = 0;
+        List<SalesModel> sales = salesRepo.findAllByAdditionNoAndCancelSales(additionNo, 0);
+        for (SalesModel sale : sales) {
+            a += sale.getTotalPrice();
+        }
+        return a;
     }
 }

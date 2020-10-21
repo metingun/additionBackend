@@ -22,5 +22,5 @@ public interface SalesRepo extends JpaRepository<SalesModel, Long> {
 
     List<SalesModel> findAllByCompleteOrderAndOrderStatusAndCancelSalesAndTableName(int completeOrder,int orderStatus,int cancelSales,String tableName);
 
-    List<SalesModel> findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqual(long firstDate, long secondDate);
+    List<SalesModel> findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqualAndCompleteOrderAndOrderStatusAndCancelSales(long firstDate, long secondDate,int completeOrder,int orderStatus,int cancelSales);
 }

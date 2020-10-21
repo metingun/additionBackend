@@ -15,7 +15,7 @@ public class CategoriesModel {
     private String categoryName;
 
     @Column
-    private int categoryType; // aşçı(1) bar(2) nargile(3)
+    private int categoryType; // hepsi(0) aşçı(1) bar(2) nargile(3)
 
     public long getId() {
         return id;

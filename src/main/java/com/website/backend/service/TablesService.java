@@ -1,6 +1,7 @@
 package com.website.backend.service;
 
 import com.website.backend.model.CompanyModel;
+import com.website.backend.model.TableTransferModel;
 import com.website.backend.model.TablesModel;
 import com.website.backend.repository.CompanyRepo;
 import com.website.backend.repository.TablesRepo;
@@ -14,10 +15,14 @@ public class TablesService {
 
     private final TablesRepo tablesRepo;
     private final CompanyRepo companyRepo;
+    private final AdditionService additionService;
+    private final SalesService salesService;
 
-    public TablesService(TablesRepo tablesRepo,CompanyRepo companyRepo) {
+    public TablesService(TablesRepo tablesRepo,CompanyRepo companyRepo,AdditionService additionService,SalesService salesService) {
         this.tablesRepo = tablesRepo;
         this.companyRepo = companyRepo;
+        this.additionService = additionService;
+        this.salesService = salesService;
     }
 
     public TablesModel save(TablesModel tablesModel,long companyId) {
@@ -68,5 +73,27 @@ public class TablesService {
     public List<TablesModel> getAllDataByCompanyId(long companyId) {
         String companyName=companyRepo.findById(companyId).getCompanyName();
         return tablesRepo.findAllByTableType(companyName);
+    }
+
+    public void tableTransfer(TablesModel toTable,TablesModel fromTable) {
+        fromTable.setPayment(0);
+        toTable.setPayment(additionService.getOneAdditionByTableNameAndActivity(toTable).getPayment());
+        tablesRepo.save(fromTable);
+        tablesRepo.save(toTable);
+    }
+
+    public String tableTransferAll(TableTransferModel tableTransferModel) {
+        TablesModel toTable=tablesRepo.findByTableName(tableTransferModel.getToTable());
+        TablesModel fromTable=tablesRepo.findByTableName(tableTransferModel.getFromTable());
+        if (toTable.getPayment()==0){
+            salesService.salesTransferToEmptyTable(tableTransferModel);
+            additionService.additionTransferToEmptyTable(tableTransferModel);
+        }
+        else {
+            salesService.salesTransfer(tableTransferModel);
+            additionService.additionTransfer(tableTransferModel);
+        }
+        tableTransfer(toTable,fromTable);
+        return "Successfully";
     }
 }
