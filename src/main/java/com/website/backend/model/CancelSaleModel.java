@@ -6,6 +6,7 @@ public class CancelSaleModel {
     private long saleId;
     private String comment;
     private int userNo;
+    private int quantity;
 
     public long getSaleId() {
         return saleId;
@@ -31,12 +32,11 @@ public class CancelSaleModel {
         this.userNo = userNo;
     }
 
-    @Override
-    public String toString() {
-        return "CancelSaleModel{" +
-                "saleId=" + saleId +
-                ", comment='" + comment + '\'' +
-                ", userNo=" + userNo +
-                '}';
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

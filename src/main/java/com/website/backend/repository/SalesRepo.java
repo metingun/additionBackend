@@ -12,6 +12,8 @@ public interface SalesRepo extends JpaRepository<SalesModel, Long> {
 
     List<SalesModel> findAllByAdditionNo(long additionNo);
 
+    List<SalesModel> findAllByProductNoAndCancelSales(int productNo,int cancelSales);
+
     List<SalesModel> findAllByAdditionNoAndCancelSales(long additionNo,int cancelSales);
 
     List<SalesModel> findAllByCancelSalesDateLongGreaterThanEqualAndCancelSalesDateLongLessThanEqualAndCancelSalesCheck(long firstDate, long secondDate,int cancelSalesCheck);

@@ -38,6 +38,36 @@ public class SalesController {
         }
     }
 
+    @RequestMapping(value = "/getSaleByRayon/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel getSaleByRayon(@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.getSaleByRayon(startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/favouriteProductsList/sortType={sortType}", method = RequestMethod.GET)
+    public ResponseModel favouriteProductsList(@PathVariable int sortType) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.favouriteProductsList(sortType), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getSaleListByRayon/startDate={startDate}/finishDate={finishDate}/categoryType={categoryType}", method = RequestMethod.GET)
+    public ResponseModel getSaleListByRayon(@PathVariable String startDate,@PathVariable String finishDate,@PathVariable int categoryType) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.getSaleListByRayon(startDate,finishDate,categoryType), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getSalesByCompleteOrderAndOrderStatusAndCancelSales/completeOrder={completeOrder}/orderStatus={orderStatus}/cancelSales={cancelSales}/categoryType={categoryType}", method = RequestMethod.GET)
     public ResponseModel getSalesByCompleteOrderAndOrderStatusAndCancelSales(@PathVariable int completeOrder,@PathVariable int orderStatus,@PathVariable int cancelSales,@PathVariable int categoryType) {
         try {

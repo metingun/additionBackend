@@ -56,6 +56,26 @@ public class AdditionController {
         }
     }
 
+    @RequestMapping(value = "/getAdditionById/id={id}", method = RequestMethod.GET)
+    public ResponseModel getAdditionById(@PathVariable long id) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(additionService.getAdditionById(id), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResponseModel update(@RequestBody AdditionModel additionModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(additionService.update(additionModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/payBill", method = RequestMethod.POST)
     public ResponseModel payBill(@RequestBody AdditionModel additionModel) {
         try {
