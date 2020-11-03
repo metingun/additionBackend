@@ -42,4 +42,9 @@ public class ProductService {
     public List<ProductModel> getAllProducts() {
         return productRepo.findAll();
     }
+
+    public String saveAll(List<ProductModel> productModels) {
+        productRepo.saveAll(productModels);
+        return "Successful";
+    }
 }

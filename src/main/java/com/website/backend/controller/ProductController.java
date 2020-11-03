@@ -5,6 +5,8 @@ import com.website.backend.model.ResponseModel;
 import com.website.backend.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/product", produces = "application/json")
 public class ProductController {
@@ -20,6 +22,16 @@ public class ProductController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(productService.save(productModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<ProductModel> productModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(productService.saveAll(productModel), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

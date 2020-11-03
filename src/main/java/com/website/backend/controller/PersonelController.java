@@ -5,6 +5,8 @@ import com.website.backend.model.ResponseModel;
 import com.website.backend.service.PersonelService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/personel", produces = "application/json")
 public class PersonelController {
@@ -20,6 +22,16 @@ public class PersonelController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(personelService.save(personelModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<PersonelModel> personelModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(personelService.saveAll(personelModel), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

@@ -10,6 +10,8 @@ import java.util.List;
 public interface AdditionRepo extends JpaRepository<AdditionModel, Long> {
     AdditionModel findByTableNameAndActivity(String tableName, int activity);
 
+    AdditionModel findByTableName(String tableName);
+
     AdditionModel findById(long id);
 
     List<AdditionModel> findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivity(long startDate, long finishDate, int activity);
@@ -17,4 +19,9 @@ public interface AdditionRepo extends JpaRepository<AdditionModel, Long> {
     List<AdditionModel> findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndCashPaymentGreaterThan(long startDate, long finishDate, int activity, double cashPayment);
 
     List<AdditionModel> findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndCreditCardPaymentGreaterThan(long startDate, long finishDate, int activity, double cashPayment);
+
+    List<AdditionModel> findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndTableNameContains(long startDate, long finishDate, int activity, String tableName);
+
+    List<AdditionModel> findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndTableNameNotContains(long startDate, long finishDate, int activity, String tableName);
+
 }

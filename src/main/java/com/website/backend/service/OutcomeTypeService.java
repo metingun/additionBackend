@@ -31,4 +31,9 @@ public class OutcomeTypeService {
     public List<OutcomeTypeModel> getAll() {
         return outcomeTypeRepo.findAll();
     }
+
+    public String saveAll(List<OutcomeTypeModel> outcomeTypeModels) {
+        outcomeTypeRepo.saveAll(outcomeTypeModels);
+        return "Successful";
+    }
 }

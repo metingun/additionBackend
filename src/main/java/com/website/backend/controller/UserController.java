@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/user", produces = "application/json")
 public class UserController {
@@ -25,6 +27,26 @@ public class UserController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(userService.createUser(userModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<UserModel> userModels) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(userService.saveAll(userModels), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
+    public ResponseModel getAll() {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(userService.getAll(), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

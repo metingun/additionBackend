@@ -32,4 +32,9 @@ public class CategoriesService {
     public List<CategoriesModel> getAll() {
         return categoriesRepo.findAll();
     }
+
+    public String saveAll(List<CategoriesModel> categoriesModels) {
+        categoriesRepo.saveAll(categoriesModels);
+        return "Successful";
+    }
 }

@@ -28,6 +28,26 @@ public class SalesController {
         }
     }
 
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<SalesModel> sales) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.saveAll(sales), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
+    public ResponseModel getAll() {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.getAll(), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getActiveSalesByTableName/tableName={tableName}", method = RequestMethod.GET)
     public ResponseModel getActiveSalesByTableName(@PathVariable String tableName) {
         try {
@@ -143,6 +163,26 @@ public class SalesController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(salesService.cancelSale(cancelSaleModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getSalesTotalByCompany/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel getSalesTotalByCompany(@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.getSalesTotalByCompany(startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getSalesDetailByCompany/startDate={startDate}/finishDate={finishDate}/companyId={companyId}", method = RequestMethod.GET)
+    public ResponseModel getSalesDetailByCompany(@PathVariable String startDate,@PathVariable String finishDate,@PathVariable long companyId) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.getSalesDetailByCompany(startDate,finishDate,companyId), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

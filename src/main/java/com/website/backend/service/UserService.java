@@ -5,6 +5,8 @@ import com.website.backend.model.UserModel;
 import com.website.backend.repository.UserRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -19,6 +21,13 @@ public class UserService {
         return "Saved Successfully";
     }
 
+    public List<UserModel> getAll() {
+        return userRepo.findAll();
+    }
+    public String saveAll(List<UserModel> userModels) {
+        userRepo.saveAll(userModels);
+        return "Saved Successfully";
+    }
     public String changePassword(ChangePasswordModel changePasswordModel) {
         UserModel user = userRepo.findByUserNameAndPassword(changePasswordModel.getUserName(),changePasswordModel.getPassword());
         if (user != null) {

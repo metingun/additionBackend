@@ -33,6 +33,11 @@ public class AdditionService {
         return additionRepo.findAll();
     }
 
+    public String saveAll(List<AdditionModel> additionModels) {
+        additionRepo.saveAll(additionModels);
+        return "Successful";
+    }
+
     public AdditionModel getAdditionById(long id) {
         return additionRepo.findById(id);
     }
@@ -41,12 +46,18 @@ public class AdditionService {
         AdditionModel additionModel1=additionRepo.findById(additionModel.getId());
         additionModel1.setCashPayment(additionModel.getCashPayment());
         additionModel1.setCreditCardPayment(additionModel.getCreditCardPayment());
+        additionModel1.setActivity(additionModel.getActivity());
         additionRepo.save(additionModel1);
         return "Successfully Updated.";
     }
 
     public List<SalesModel> getAdditionByTableNameAndActivity(TablesModel tablesModel) {
         long additionId = additionRepo.findByTableNameAndActivity(tablesModel.getTableName(), 1).getId();
+        return salesRepo.findAllByAdditionNoAndCancelSales(additionId, 0);
+    }
+
+    public List<SalesModel> getAdditionByTableName(TablesModel tablesModel) {
+        long additionId = additionRepo.findByTableName(tablesModel.getTableName()).getId();
         return salesRepo.findAllByAdditionNoAndCancelSales(additionId, 0);
     }
 

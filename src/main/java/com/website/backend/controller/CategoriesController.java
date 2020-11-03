@@ -5,6 +5,8 @@ import com.website.backend.model.ResponseModel;
 import com.website.backend.service.CategoriesService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/categories", produces = "application/json")
 public class CategoriesController {
@@ -20,6 +22,16 @@ public class CategoriesController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(categoriesService.save(categoriesModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<CategoriesModel> categoriesModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(categoriesService.saveAll(categoriesModel), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

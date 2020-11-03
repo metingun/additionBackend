@@ -6,6 +6,8 @@ import com.website.backend.model.TablesModel;
 import com.website.backend.service.AdditionService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/addition", produces = "application/json")
 public class AdditionController {
@@ -14,6 +16,16 @@ public class AdditionController {
 
     public AdditionController(AdditionService additionService) {
         this.additionService = additionService;
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<AdditionModel> additionModels) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(additionService.saveAll(additionModels), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
     }
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
@@ -51,6 +63,16 @@ public class AdditionController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(additionService.getAdditionByTableNameAndActivity(tablesModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getAdditionByTableName", method = RequestMethod.POST)
+    public ResponseModel getAdditionByTableName(@RequestBody TablesModel tablesModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(additionService.getAdditionByTableName(tablesModel), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

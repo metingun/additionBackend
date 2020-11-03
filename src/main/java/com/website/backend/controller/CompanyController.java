@@ -5,6 +5,8 @@ import com.website.backend.model.ResponseModel;
 import com.website.backend.service.CompanyService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/company", produces = "application/json")
 public class CompanyController {
@@ -25,11 +27,31 @@ public class CompanyController {
         }
     }
 
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<CompanyModel> companyModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(companyService.saveAll(companyModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseModel getAll() {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(companyService.getAll(), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getByMenuType/menuType={menuType}", method = RequestMethod.GET)
+    public ResponseModel getByMenuType(@PathVariable int menuType) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(companyService.getByMenuType(menuType), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

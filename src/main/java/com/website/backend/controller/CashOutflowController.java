@@ -7,6 +7,8 @@ import com.website.backend.service.CashOutflowService;
 import com.website.backend.service.PersonelService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/cashOutflow", produces = "application/json")
 public class CashOutflowController {
@@ -27,11 +29,41 @@ public class CashOutflowController {
         }
     }
 
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResponseModel update(@RequestBody CashOutflowModel cashOutflowModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.update(cashOutflowModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<CashOutflowModel> cashOutflowModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.saveAll(cashOutflowModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getAll", method = RequestMethod.GET)
     public ResponseModel getAll() {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(cashOutflowService.getAll(), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getCashOutflowById/id={id}", method = RequestMethod.GET)
+    public ResponseModel getCashOutflowById(@PathVariable long id) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(cashOutflowService.getCashOutflowById(id), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

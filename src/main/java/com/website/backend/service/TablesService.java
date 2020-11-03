@@ -32,7 +32,13 @@ public class TablesService {
         if (companyId==-1){
             tablesModel.setTableType("Dış Siparişler");
             tablesModel.setMenuType(1);
-        }else{
+        }
+        else if(companyId==-2){
+            String[] parts = tablesModel.getTableName().split("\\|\\|");
+            tablesModel.setTableType(parts[0]);
+            tablesModel.setMenuType(1);
+        }
+        else{
             CompanyModel company=companyRepo.findById(companyId);
             tablesModel.setTableType(company.getCompanyName());
             tablesModel.setMenuType(company.getMenuType());
@@ -49,6 +55,10 @@ public class TablesService {
 
     public List<TablesModel> getAll() {
         return tablesRepo.findAll();
+    }
+    public String saveAll(List<TablesModel> tablesModels) {
+        tablesRepo.saveAll(tablesModels);
+        return "Successful";
     }
 
     public String getTableNameById(long id) {

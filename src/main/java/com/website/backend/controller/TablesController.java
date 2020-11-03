@@ -6,6 +6,8 @@ import com.website.backend.model.TablesModel;
 import com.website.backend.service.TablesService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/tables", produces = "application/json")
 public class TablesController {
@@ -21,6 +23,16 @@ public class TablesController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(tablesService.save(tablesModel,companyId), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<TablesModel> tablesModels) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(tablesService.saveAll(tablesModels), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

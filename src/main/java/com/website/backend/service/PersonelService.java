@@ -38,6 +38,11 @@ public class PersonelService {
         return personelRepo.findAll();
     }
 
+    public String saveAll(List<PersonelModel> personelModels) {
+        personelRepo.saveAll(personelModels);
+        return "Successful";
+    }
+
     public List<PersonalPayModel> getPersonalPayInfo(String startDate,String finishDate) {
         List<CashOutflowModel> cashOutflowModels;
         List<PersonalPayModel> personalPayModelList = new ArrayList<>();

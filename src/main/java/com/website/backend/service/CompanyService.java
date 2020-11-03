@@ -39,6 +39,15 @@ public class CompanyService {
         return companyRepo.findAll();
     }
 
+    public String saveAll(List<CompanyModel> companyModels) {
+        companyRepo.saveAll(companyModels);
+        return "Successful";
+    }
+
+    public List<CompanyModel> getByMenuType(int menuType) {
+        return companyRepo.findAllByMenuType(menuType);
+    }
+
     public int getCompanySaleStatusByCompanyId(long id) {
         List<TablesModel> tableList=tablesRepo.findAllByTableType(companyRepo.findById(id).getCompanyName());
         for (TablesModel table:tableList) {

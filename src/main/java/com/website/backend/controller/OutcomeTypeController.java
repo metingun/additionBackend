@@ -5,6 +5,8 @@ import com.website.backend.model.ResponseModel;
 import com.website.backend.service.OutcomeTypeService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/restful/outcomeType", produces = "application/json")
 public class OutcomeTypeController {
@@ -20,6 +22,16 @@ public class OutcomeTypeController {
         try {
             return ResponseModel
                     .createSuccessResponseWithData(outcomeTypeService.save(outcomeTypeModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/saveAll", method = RequestMethod.POST)
+    public ResponseModel saveAll(@RequestBody List<OutcomeTypeModel> outcomeTypeModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(outcomeTypeService.saveAll(outcomeTypeModel), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

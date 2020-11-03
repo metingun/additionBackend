@@ -31,4 +31,9 @@ public class DiscountTypeService {
     public List<DiscountTypeModel> getAll() {
         return discountTypeRepo.findAll();
     }
+
+    public String saveAll(List<DiscountTypeModel> discountTypeModels) {
+        discountTypeRepo.saveAll(discountTypeModels);
+        return "Successful";
+    }
 }

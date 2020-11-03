@@ -55,6 +55,22 @@ public class CashOutflowService {
         return cashOutflowRepo.findAll();
     }
 
+    public CashOutflowModel getCashOutflowById(long id) {
+        return cashOutflowRepo.findById(id);
+    }
+
+    public String update(CashOutflowModel cashOutflowModel) {
+        CashOutflowModel cashOutflowModel1=cashOutflowRepo.findById(cashOutflowModel.getId());
+        cashOutflowModel1.setPrice(cashOutflowModel.getPrice());
+        cashOutflowRepo.save(cashOutflowModel1);
+        return "Successfully";
+    }
+
+    public String saveAll(List<CashOutflowModel> cashOutflowModels) {
+        cashOutflowRepo.saveAll(cashOutflowModels);
+        return "Successful";
+    }
+
     public List<CashOutflowModel> getAllByDate(String startDate,String finishDate) throws ParseException {
         List<Long> dateLong=additionService.convertLong(startDate,finishDate);
         return cashOutflowRepo.findAllByDateLongGreaterThanEqualAndDateLongLessThanEqual(dateLong.get(0),dateLong.get(1));
