@@ -68,11 +68,11 @@ public class AdditionController {
         }
     }
 
-    @RequestMapping(value = "/getAdditionByTableName", method = RequestMethod.POST)
-    public ResponseModel getAdditionByTableName(@RequestBody TablesModel tablesModel) {
+    @RequestMapping(value = "/getAdditionDetailById/additionId={id}", method = RequestMethod.GET)
+    public ResponseModel getAdditionDetailById(@PathVariable long id) {
         try {
             return ResponseModel
-                    .createSuccessResponseWithData(additionService.getAdditionByTableName(tablesModel), false);
+                    .createSuccessResponseWithData(additionService.getAdditionDetailById(id), false);
         } catch (Exception e) {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }

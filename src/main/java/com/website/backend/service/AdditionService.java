@@ -56,9 +56,8 @@ public class AdditionService {
         return salesRepo.findAllByAdditionNoAndCancelSales(additionId, 0);
     }
 
-    public List<SalesModel> getAdditionByTableName(TablesModel tablesModel) {
-        long additionId = additionRepo.findByTableName(tablesModel.getTableName()).getId();
-        return salesRepo.findAllByAdditionNoAndCancelSales(additionId, 0);
+    public List<SalesModel> getAdditionDetailById(long id) {
+        return salesRepo.findAllByAdditionNoAndCancelSales(id, 0);
     }
 
     public List<Long> convertLong(String startDate, String finishDate) throws ParseException {
