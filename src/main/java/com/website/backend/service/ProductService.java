@@ -1,8 +1,10 @@
 package com.website.backend.service;
 
+import com.website.backend.model.PersonelModel;
 import com.website.backend.model.ProductModel;
 import com.website.backend.repository.CategoriesRepo;
 import com.website.backend.repository.ProductRepo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +31,19 @@ public class ProductService {
 
     public String deleteProduct(long productId) {
         productRepo.delete(productRepo.findById(productId));
+        return "200";
+    }
+
+    public ProductModel getOneById(long productId) {
+        return productRepo.findById(productId);
+    }
+
+    public String update(ProductModel productModel) {
+        ProductModel product = productRepo.findById(productModel.getId());
+        product.setProductName(productModel.getProductName());
+        product.setUnitPriceForIn(productModel.getUnitPriceForIn());
+        product.setUnitPriceForOut(productModel.getUnitPriceForOut());
+        productRepo.save(product);
         return "200";
     }
 

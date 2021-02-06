@@ -158,6 +158,38 @@ public class AdditionService {
         return dailyIncomeModel;
     }
 
+    public String payPartialBill(AdditionModel additionModel) {
+        Date date = new Date();
+        String formatDate = dateFormat.format(date);
+        long nowDate = date.getTime();
+        AdditionModel addition = additionRepo.findByTableNameAndActivity(additionModel.getTableName(), 1);
+        additionModel.setPayment(additionModel.getCashPayment()+additionModel.getCreditCardPayment());
+        additionModel.setDiscountedPayment(additionModel.getCashPayment()+additionModel.getCreditCardPayment());
+        additionModel.setAdditionFinishDateLong(nowDate);
+        additionModel.setAdditionFinishDate(formatDate);
+        additionModel.setAdditionStartDate(addition.getAdditionStartDate());
+        additionModel.setAdditionStartDateLong(addition.getAdditionStartDateLong());
+        if (additionModel.getDiscountName().equals("İndirim seçiniz")) {
+            additionModel.setDiscountedPayment(additionModel.getPayment());
+            additionModel.setDiscountName("yok");
+        } else {
+            additionModel.setDiscountedPayment(calculateDiscountedPrice(additionModel, addition));
+        }
+        additionModel.setActivity(0);
+        TablesModel table = tablesRepo.findByTableName(addition.getTableName());
+        if (table.getMenuType() == 1&&table.getPayment()==(additionModel.getCashPayment()+additionModel.getCreditCardPayment())) {
+            tablesRepo.delete(table);
+        } else {
+            table.setPayment(table.getPayment()-additionModel.getDiscountedPayment());
+            tablesRepo.save(table);
+        }
+        addition.setPayment(addition.getPayment()-additionModel.getDiscountedPayment());
+        addition.setDiscountedPayment(addition.getDiscountedPayment()-additionModel.getDiscountedPayment());
+        additionRepo.save(addition);
+        additionRepo.save(additionModel);
+        return "200";
+    }
+
     public String payBill(AdditionModel additionModel) {
         Date date = new Date();
         String formatDate = dateFormat.format(date);

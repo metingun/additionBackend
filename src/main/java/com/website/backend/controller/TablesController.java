@@ -48,6 +48,16 @@ public class TablesController {
         }
     }
 
+    @RequestMapping(value = "/getTableByName/name={name}", method = RequestMethod.GET)
+    public ResponseModel getTableByName(@PathVariable String name) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(tablesService.getTableByName(name), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getTableNameById/id={id}", method = RequestMethod.GET)
     public ResponseModel getTableNameById(@PathVariable long id) {
         try {

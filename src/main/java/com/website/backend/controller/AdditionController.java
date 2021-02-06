@@ -107,4 +107,14 @@ public class AdditionController {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }
     }
+
+    @RequestMapping(value = "/payPartialBill", method = RequestMethod.POST)
+    public ResponseModel payPartialBill(@RequestBody AdditionModel additionModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(additionService.payPartialBill(additionModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
 }

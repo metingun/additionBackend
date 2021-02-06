@@ -3,6 +3,7 @@ package com.website.backend.service;
 import com.website.backend.model.*;
 import com.website.backend.repository.CashOutflowRepo;
 import com.website.backend.repository.PersonelRepo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +32,17 @@ public class PersonelService {
 
     public String delete(long id) {
         personelRepo.delete(personelRepo.findById(id));
+        return "200";
+    }
+
+    public PersonelModel getOneById(long id) {
+        return personelRepo.findById(id);
+    }
+
+    public String update(PersonelModel personelModel) {
+        PersonelModel personel=personelRepo.findById(personelModel.getId());
+        BeanUtils.copyProperties(personelModel,personel);
+        personelRepo.save(personel);
         return "200";
     }
 

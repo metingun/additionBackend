@@ -66,4 +66,24 @@ public class PersonelController {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }
     }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResponseModel delete(@RequestBody PersonelModel personelModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(personelService.update(personelModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getOneById/id={id}", method = RequestMethod.GET)
+    public ResponseModel getOneById(@PathVariable long id) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(personelService.getOneById(id), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
 }

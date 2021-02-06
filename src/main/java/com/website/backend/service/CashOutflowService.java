@@ -40,6 +40,7 @@ public class CashOutflowService {
             cashOutflowModel.setType(outcomeTypeRepo.findById(cashOutflowModel.getTypeId()).getOutcomeType());
         }
         else {
+            cashOutflowModel.setPersonelName(personelRepo.findById(Long.parseLong(cashOutflowModel.getPersonelName())).getName());
             cashOutflowModel.setType("Personel Ödemesi");
         }
         cashOutflowRepo.save(cashOutflowModel);

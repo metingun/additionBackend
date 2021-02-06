@@ -66,4 +66,24 @@ public class ProductController {
             return ResponseModel.createErrorResponseWithErrorMessage(e);
         }
     }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public ResponseModel update(@RequestBody ProductModel productModel) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(productService.update(productModel), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
+    @RequestMapping(value = "/getOneById/id={id}", method = RequestMethod.GET)
+    public ResponseModel getOneById(@PathVariable long id) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(productService.getOneById(id), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
 }

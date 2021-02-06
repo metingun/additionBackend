@@ -56,6 +56,11 @@ public class TablesService {
     public List<TablesModel> getAll() {
         return tablesRepo.findAll();
     }
+
+    public TablesModel getTableByName(String name) {
+        return tablesRepo.findByTableName(name);
+    }
+
     public String saveAll(List<TablesModel> tablesModels) {
         tablesRepo.saveAll(tablesModels);
         return "Successful";

@@ -447,10 +447,13 @@ public class SalesService {
             double totalSalesOutSale = 0;
             List<AdditionModel> outAdditions = additionRepo.findAllByAdditionFinishDateLongGreaterThanEqualAndAdditionFinishDateLongLessThanEqualAndActivityAndTableNameContains(a, b, 0, "||");
             for (AdditionModel additionModel : outAdditions) {
+                if(!additionModel.getTableName().equals("||")){
                 String c = additionModel.getTableName().split("\\|\\|")[0];
-                if (companyRepo.findByCompanyName(c) == null) {
-                    totalSalesOutSale += additionModel.getCashPayment() + additionModel.getCreditCardPayment();
+                    if (companyRepo.findByCompanyName(c) == null) {
+                        totalSalesOutSale += additionModel.getCashPayment() + additionModel.getCreditCardPayment();
+                    }
                 }
+
             }
 
             saleByCompanyModel1.setCompanyId(-1);
