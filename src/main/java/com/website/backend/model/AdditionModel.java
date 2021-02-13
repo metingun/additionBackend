@@ -41,6 +41,17 @@ public class AdditionModel {
     @Column
     private String tableName;
 
+    @Column
+    private long additionConnection=-1;
+
+    public long getAdditionConnection() {
+        return additionConnection;
+    }
+
+    public void setAdditionConnection(long additionConnection) {
+        this.additionConnection = additionConnection;
+    }
+
     public double getDiscountedPayment() {
         return discountedPayment;
     }

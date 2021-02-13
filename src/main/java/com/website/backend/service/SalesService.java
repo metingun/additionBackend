@@ -229,7 +229,7 @@ public class SalesService {
         }
         additionRepo.save(additionModel);
         TablesModel table = tablesRepo.findByTableName(salesModel.getTableName());
-        table.setPayment(calculateTotalPay(salesModel.getAdditionNo()));
+        table.setPayment(additionModel.getPayment());
         tablesRepo.save(table);
     }
 
@@ -238,15 +238,6 @@ public class SalesService {
         salesModel.setCancelSalesCheck(1);
         salesRepo.save(salesModel);
         return "200";
-    }
-
-    private double calculateTotalPay(long additionNo) {
-        double a = 0;
-        List<SalesModel> sales = salesRepo.findAllByAdditionNoAndCancelSales(additionNo, 0);
-        for (SalesModel sale : sales) {
-            a += sale.getTotalPrice();
-        }
-        return a;
     }
 
     public void salesTransferToEmptyTable(TableTransferModel tableTransferModel) {
@@ -366,6 +357,43 @@ public class SalesService {
                 salesModels = salesRepo.findAllByProductNoAndCancelSales(productModel.getProductNo(), 1);
             } else {
                 salesModels = salesRepo.findAllByProductNoAndCancelSales(productModel.getProductNo(), 0);
+            }
+            for (SalesModel salesModel : salesModels) {
+                i += salesModel.getQuantity();
+            }
+            favouriteProductModel.setProductNo(productModel.getProductNo());
+            favouriteProductModel.setProductName(productModel.getProductName());
+            favouriteProductModel.setTotalQuantity(i);
+            favouriteProductModels.add(favouriteProductModel);
+        }
+        if (sortType == 1) {
+            favouriteProductModels = favouriteProductModels.stream()
+                    .sorted(Comparator.comparing(FavouriteProductModel::getTotalQuantity))
+                    .collect(Collectors.toList());
+        } else {
+            favouriteProductModels = favouriteProductModels.stream()
+                    .sorted(Comparator.comparing(FavouriteProductModel::getTotalQuantity).reversed())
+                    .collect(Collectors.toList());
+        }
+
+
+        return favouriteProductModels;
+    }
+
+    public List<FavouriteProductModel> favouriteProductsListByDate(int sortType,String startDate,String finishDate) throws ParseException {
+        List<Long> arr = convertLong(startDate, finishDate);
+        long a= arr.get(0);
+        long b= arr.get(1);
+        List<ProductModel> productModels = productRepo.findAll();
+        List<SalesModel> salesModels;
+        List<FavouriteProductModel> favouriteProductModels = new ArrayList<>();
+        for (ProductModel productModel : productModels) {
+            FavouriteProductModel favouriteProductModel = new FavouriteProductModel();
+            int i = 0;
+            if (sortType == 3) {
+                salesModels = salesRepo.findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqualAndProductNoAndCancelSales(a,b,productModel.getProductNo(), 1);
+            } else {
+                salesModels = salesRepo.findAllBySalesStartDateLongGreaterThanEqualAndSalesStartDateLongLessThanEqualAndProductNoAndCancelSales(a,b,productModel.getProductNo(), 0);
             }
             for (SalesModel salesModel : salesModels) {
                 i += salesModel.getQuantity();

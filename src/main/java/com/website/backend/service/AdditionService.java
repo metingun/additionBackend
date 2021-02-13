@@ -44,6 +44,18 @@ public class AdditionService {
 
     public String update(AdditionModel additionModel) {
         AdditionModel additionModel1=additionRepo.findById(additionModel.getId());
+        if (additionModel1.getAdditionConnection()!=-1){
+            AdditionModel parentAddition=additionRepo.findById(additionModel1.getAdditionConnection());
+            parentAddition.setPayment(additionModel1.getCashPayment()+additionModel1.getCreditCardPayment()+parentAddition.getPayment());
+            if (parentAddition.getActivity()==0){
+                parentAddition.setDiscountedPayment(additionModel1.getCashPayment()+additionModel1.getCreditCardPayment()+parentAddition.getDiscountedPayment());
+            }else if (parentAddition.getActivity()==1){
+                TablesModel tablesModel=tablesRepo.findByTableName(parentAddition.getTableName());
+                tablesModel.setPayment(tablesModel.getPayment()+additionModel1.getCashPayment()+additionModel1.getCreditCardPayment());
+                tablesRepo.save(tablesModel);
+            }
+            additionRepo.save(parentAddition);
+        }
         additionModel1.setCashPayment(additionModel.getCashPayment());
         additionModel1.setCreditCardPayment(additionModel.getCreditCardPayment());
         additionModel1.setActivity(additionModel.getActivity());
@@ -175,6 +187,9 @@ public class AdditionService {
         } else {
             additionModel.setDiscountedPayment(calculateDiscountedPrice(additionModel, addition));
         }
+        if (additionModel.getCreditCardPayment()+additionModel.getCashPayment()==addition.getPayment()){
+            addition.setActivity(0);
+        }
         additionModel.setActivity(0);
         TablesModel table = tablesRepo.findByTableName(addition.getTableName());
         if (table.getMenuType() == 1&&table.getPayment()==(additionModel.getCashPayment()+additionModel.getCreditCardPayment())) {
@@ -184,7 +199,7 @@ public class AdditionService {
             tablesRepo.save(table);
         }
         addition.setPayment(addition.getPayment()-additionModel.getDiscountedPayment());
-        addition.setDiscountedPayment(addition.getDiscountedPayment()-additionModel.getDiscountedPayment());
+        additionModel.setAdditionConnection(addition.getId());
         additionRepo.save(addition);
         additionRepo.save(additionModel);
         return "200";

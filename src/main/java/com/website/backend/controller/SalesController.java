@@ -78,6 +78,16 @@ public class SalesController {
         }
     }
 
+    @RequestMapping(value = "/favouriteProductsListByDate/sortType={sortType}/startDate={startDate}/finishDate={finishDate}", method = RequestMethod.GET)
+    public ResponseModel favouriteProductsListByDate(@PathVariable int sortType,@PathVariable String startDate,@PathVariable String finishDate) {
+        try {
+            return ResponseModel
+                    .createSuccessResponseWithData(salesService.favouriteProductsListByDate(sortType,startDate,finishDate), false);
+        } catch (Exception e) {
+            return ResponseModel.createErrorResponseWithErrorMessage(e);
+        }
+    }
+
     @RequestMapping(value = "/getSaleListByRayon/startDate={startDate}/finishDate={finishDate}/categoryType={categoryType}", method = RequestMethod.GET)
     public ResponseModel getSaleListByRayon(@PathVariable String startDate,@PathVariable String finishDate,@PathVariable int categoryType) {
         try {
